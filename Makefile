@@ -7,20 +7,8 @@ T=test
 TO=testout
 CXX=clang++
 
-# files in form ``$O/file.o'' format
-#
-# Example:
-#
-# files=$O/move.o        \
-#       $O/newmove.o
-files=
+files=$O/insert_mode.o
 
-# we use ``catch'' as the framework as it is amazing
-# https://github.com/philsquared/Catch
-#
-# Example:
-#
-# testfiles=${TO}/move_tests.o
 testfiles=
 
 all: ${files}
