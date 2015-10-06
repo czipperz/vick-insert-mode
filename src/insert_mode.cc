@@ -6,7 +6,7 @@
 
 void enter_insert_mode(contents& contents, boost::optional<int>) {
     char ch;
-    while(ch = getch() != _escape) {
+    while((ch = getch()) != _escape) {
         contents.cont[contents.y].insert(contents.x, 1, ch);
         mvf(contents);
     }
@@ -14,7 +14,7 @@ void enter_insert_mode(contents& contents, boost::optional<int>) {
 
 void enter_replace_insert_mode(contents& contents, boost::optional<int>) {
     char ch;
-    while(ch = getch() != _escape) {
+    while((ch = getch()) != _escape) {
         if(contents.x >= contents.cont[contents.y].size()) {
             contents.cont[contents.y].push_back(ch);
         } else {
