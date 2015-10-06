@@ -16,8 +16,7 @@ before_script:
   - cd czipperz/vick
   - mkdir -p plugins
   - cd plugins
-  # customize me!
-  - git clone https://github.com/czipperz/vick-plugin-base
+  - git clone https://github.com/czipperz/vick-insert-mode
   - cd ..
 
 script:
