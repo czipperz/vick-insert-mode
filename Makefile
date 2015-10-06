@@ -40,7 +40,6 @@ $T/blank:
 
 test: ${files} ${testfiles} $T/blank
 	@rm $T/blank
-	cd ../vick-move && make test
 	@mkdir -p $T
 	${CXX} -o $T/out ${files} ${testfiles} ${CFLAGS} ${LDFLAGS} ../../src/configuration.cc -Dtesting
 	./$T/out
