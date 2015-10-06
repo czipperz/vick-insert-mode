@@ -12,8 +12,10 @@ files=$O/insert_mode.o
 testfiles=
 
 all: ${files}
+
+begin:
 	[ -d ../vick-move ] || git clone "https://github.com/czipperz/vick-move" ../vick-move
-	cd ../vick-move && make
+	cd ../vick-move && make begin && make
 
 $O/%.o: $S/%.cc $S/%.hh
 	@mkdir -p $O
@@ -38,7 +40,6 @@ $T/blank:
 
 test: ${files} ${testfiles} $T/blank
 	@rm $T/blank
-	[ -d ../vick-move ] || git clone "https://github.com/czipperz/vick-move" ../vick-move
 	cd ../vick-move && make test
 	@mkdir -p $T
 	${CXX} -o $T/out ${files} ${testfiles} ${CFLAGS} ${LDFLAGS} ../../src/configuration.cc -Dtesting
