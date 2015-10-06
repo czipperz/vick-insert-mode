@@ -17,7 +17,9 @@ before_script:
   - mkdir -p plugins
   - cd plugins
   - git clone https://github.com/czipperz/vick-insert-mode
-  - cd ..
+  - cd vick-insert-mode
+  - make begin
+  - cd ../..
 
 script:
   - make regen Dtesting=-Dtesting
