@@ -1,6 +1,6 @@
 CFLAGS=-std=c++11 -I../../src -I../../test -Isrc
 LDFLAGS=`find ../../out -type f -not \( -name main.o -o -name configuration.o \)` \
-        -lncurses ../../testout/test_main.o
+        -lncurses ../../testout/test_main.o `find ../vick-move/out -type f`
 O=out
 S=src
 T=test
@@ -12,6 +12,7 @@ files=$O/insert_mode.o
 testfiles=
 
 all: ${files}
+	[ -d ../vick-move ] || git clone "https://github.com/czipperz/vick-move" ../vick-move
 
 $O/%.o: $S/%.cc $S/%.hh
 	@mkdir -p $O
@@ -36,6 +37,7 @@ $T/blank:
 
 test: ${files} ${testfiles} $T/blank
 	@rm $T/blank
+	[ -d ../vick-move ] || git clone "https://github.com/czipperz/vick-move" ../vick-move
 	@mkdir -p $T
 	${CXX} -o $T/out ${files} ${testfiles} ${CFLAGS} ${LDFLAGS} ../../src/configuration.cc -Dtesting
 	./$T/out
