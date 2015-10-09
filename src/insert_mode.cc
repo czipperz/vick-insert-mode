@@ -7,9 +7,17 @@
 void enter_insert_mode(contents& contents, boost::optional<int>) {
     char ch;
     contents.is_inserting = true;
+    if(get_contents().refresh) {
+        print_contents(get_contents());
+    }
     while((ch = getch()) != _escape) {
-        contents.cont[contents.y].insert(contents.x, 1, ch);
-        mvf(contents);
+        if(contents.x >= contents.cont[contents.y].size()) {
+            contents.cont[contents.y].push_back(ch);
+            contents.x = contents.cont[contents.y].size();
+        } else {
+            contents.cont[contents.y].insert(contents.x, 1, ch);
+            contents.x++;
+        }
         if(get_contents().refresh) {
             print_contents(get_contents());
         }
