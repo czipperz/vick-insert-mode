@@ -48,3 +48,8 @@ void enter_replace_mode(contents& contents, boost::optional<int>) {
     }
     contents.is_inserting = false;
 }
+
+void enter_append_mode(contents& contents, boost::optional<int> b) {
+    contents.x++;
+    enter_insert_mode(contents, b);
+}
