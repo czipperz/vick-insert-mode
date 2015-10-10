@@ -27,6 +27,7 @@ void enter_insert_mode(contents& contents, boost::optional<int>) {
         }
     }
     contents.is_inserting = false;
+    showing_message = false;
 }
 
 void enter_replace_mode(contents& contents, boost::optional<int>) {
@@ -47,6 +48,7 @@ void enter_replace_mode(contents& contents, boost::optional<int>) {
         }
     }
     contents.is_inserting = false;
+    showing_message = false;
 }
 
 void enter_append_mode(contents& contents, boost::optional<int> b) {
