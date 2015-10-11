@@ -1,3 +1,6 @@
+#ifndef HEADER_GUARD_INSERT_MODE_H
+#define HEADER_GUARD_INSERT_MODE_H
+
 #include "../../../src/contents.hh"
 
 /*!
@@ -49,3 +52,5 @@ void enter_replace_mode(contents&, boost::optional<int> = boost::none);
  * \see global_insert_map
  */
 void enter_append_mode (contents&, boost::optional<int> = boost::none);
+
+#endif
