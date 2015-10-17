@@ -5,7 +5,7 @@
 #include "../../../src/show_message.hh"
 #include "../../vick-move/src/move.hh"
 
-void enter_insert_mode(contents& contents, boost::optional<int>) {
+boost::optional< std::shared_ptr<change> > enter_insert_mode(contents& contents, boost::optional<int>) {
     char ch;
     show_message("--INSERT--");
     contents.is_inserting = true;
@@ -28,9 +28,10 @@ void enter_insert_mode(contents& contents, boost::optional<int>) {
     }
     contents.is_inserting = false;
     showing_message = false;
+    return boost::none;
 }
 
-void enter_replace_mode(contents& contents, boost::optional<int>) {
+boost::optional< std::shared_ptr<change> > enter_replace_mode(contents& contents, boost::optional<int>) {
     char ch;
     show_message("--INSERT (REPLACE)--");
     contents.is_inserting = true;
@@ -49,9 +50,10 @@ void enter_replace_mode(contents& contents, boost::optional<int>) {
     }
     contents.is_inserting = false;
     showing_message = false;
+    return boost::none;
 }
 
-void enter_append_mode(contents& contents, boost::optional<int> b) {
+boost::optional< std::shared_ptr<change> > enter_append_mode(contents& contents, boost::optional<int> b) {
     contents.x++;
-    enter_insert_mode(contents, b);
+    return enter_insert_mode(contents, b);
 }

@@ -26,7 +26,7 @@
  *
  * \see global_insert_map
  */
-void enter_insert_mode (contents&, boost::optional<int> = boost::none);
+boost::optional< std::shared_ptr<change> > enter_insert_mode (contents&, boost::optional<int> = boost::none);
 /*!
  * \brief Similar to insert mode but overrides text
  *
@@ -42,7 +42,7 @@ void enter_insert_mode (contents&, boost::optional<int> = boost::none);
  * \see enter_insert_mode()
  * \see global_insert_map
  */
-void enter_replace_mode(contents&, boost::optional<int> = boost::none);
+boost::optional< std::shared_ptr<change> > enter_replace_mode(contents&, boost::optional<int> = boost::none);
 /*!
  * \brief Moves forward a character then enters insert mode
  *
@@ -51,6 +51,6 @@ void enter_replace_mode(contents&, boost::optional<int> = boost::none);
  * \see enter_insert_mode()
  * \see global_insert_map
  */
-void enter_append_mode (contents&, boost::optional<int> = boost::none);
+boost::optional< std::shared_ptr<change> > enter_append_mode (contents&, boost::optional<int> = boost::none);
 
 #endif
