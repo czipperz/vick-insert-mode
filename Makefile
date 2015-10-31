@@ -8,6 +8,7 @@ TO=testout
 CXX=clang++
 
 files=$O/insert_mode.o      \
+      $O/open_line.o        \
       $O/join.o
 
 testfiles=
