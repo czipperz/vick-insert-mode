@@ -11,7 +11,7 @@ files=$O/insert_mode.o      \
       $O/open_line.o        \
       $O/join.o
 
-testfiles=
+testfiles=${TO}/insert_mode_tests.o
 
 all: ${files}
 
