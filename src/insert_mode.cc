@@ -1,57 +1,83 @@
 #include <ncurses.h>
 
+#include "../../../src/concat_c.hh"
 #include "../../../src/contents.hh"
 #include "../../../src/key_aliases.hh"
 #include "../../../src/show_message.hh"
 #include "../../vick-move/src/move.hh"
 
 struct insert_c : public change {
-    std::string after,before;
-    std::string diff;
-    unsigned long y,x;
-    insert_c(unsigned long y, std::string after, std::string before)
-        : after(after), before(before), y(y)
+    const std::string track;
+    const move_t y, x;
+    insert_c(const std::string& track, move_t y, move_t x)
+        : track(track), y(y), x(x)
     {
-        //derive diff
-        bool stilleq = true;
-        for(unsigned int b = 0; b < before.length(); b++) {
-            for(unsigned int a = 0; a < after.length(); a++) {
-                if(b == before.length()) {
-                    diff += after.substr(b);
-                    return;
-                }
-                if(before[b] != after[a] && stilleq) {
-                    stilleq = false;
-                    x = b;
-                }
-                if(!stilleq) {
-                }
-            }
-        }
     }
-    virtual bool is_overriding() override { return true; }
-    virtual void undo(contents& contents) override {
+    virtual bool is_overriding() override
+    {
+        return true;
+    }
+    virtual void undo(contents& contents) override
+    {
+        contents.cont[y] = contents.cont[y].substr(0, x) +
+                           contents.cont[y].substr(x + track.size());
         contents.y = y;
         contents.x = x;
-        contents.cont[contents.y] = before;
+        if (contents.x >= contents.cont[y].size())
+            contents.x = contents.cont[y].size() - 1;
     }
-    virtual void redo(contents& contents) override {
+    virtual void redo(contents& contents) override
+    {
+        contents.cont[y] =
+            contents.cont[y].substr(0, x) + track + contents.cont[y].substr(x);
         contents.y = y;
-        contents.x = x;
-        contents.cont[contents.y] = after;
+        contents.x = x + track.size();
+        if (contents.x >= contents.cont[y].size())
+            contents.x = contents.cont[y].size() - 1;
     }
-    virtual std::shared_ptr<change> regenerate(const contents& contents) const override {
-        return std::make_shared<insert_c>(contents.y, contents.x, diff, contents.cont[contents.y]);
-    }
-    insert_c(unsigned long y, unsigned long x, std::string diff, std::string before)
-        : before(before), diff(diff), y(y), x(x) {
-        //derive after
+    virtual std::shared_ptr<change> regenerate(const contents& contents) const
+        override
+    {
+        return std::make_shared<insert_c>(track, contents.y, contents.x);
     }
 };
 
-boost::optional< std::shared_ptr<change> > enter_insert_mode(contents& contents, boost::optional<int>) {
-    std::string before = contents.cont[contents.y];
-    auto y = contents.y;
+struct newline_c : public change {
+    const std::string first, second;
+    const int y;
+    newline_c(const contents& contents)
+        : first(contents.cont[contents.y].substr(0, contents.x))
+        , second(contents.cont[contents.y].substr(contents.x))
+        , y(contents.y)
+    {
+    }
+    virtual bool is_overriding()
+    {
+        return true;
+    }
+    virtual void undo(contents& contents)
+    {
+        contents.cont[y] = first + second;
+        contents.cont.erase(contents.cont.begin() + y + 1);
+        contents.y = y;
+        contents.x = first.size();
+    }
+    virtual void redo(contents& contents)
+    {
+        contents.cont[y] = first;
+        contents.cont.insert(contents.cont.begin() + y + 1, second);
+        contents.y = y+1;
+        contents.x = 0;
+    }
+    virtual std::shared_ptr<change> regenerate(const contents& contents) const
+    {
+        return std::make_shared<newline_c>(contents);
+    }
+};
+
+boost::optional< std::shared_ptr<change> > enter_insert_mode(contents& contents, boost::optional<int> pref) {
+    std::string track;
+    auto x = contents.x;
     char ch;
     show_message("--INSERT--");
     contents.is_inserting = true;
@@ -60,12 +86,28 @@ boost::optional< std::shared_ptr<change> > enter_insert_mode(contents& contents,
         show_message("--INSERT--");
     }
     while((ch = getch()) != _escape) {
+        if(ch == '\n') {
+            std::vector<std::shared_ptr<change> > changes;
+            changes.reserve(3);
+            if (track.size())
+                changes.push_back(
+                    std::make_shared<insert_c>(track, contents.y, x));
+            changes.push_back(std::make_shared<newline_c>(contents));
+            changes.back()->redo(contents);
+            auto recursed = enter_insert_mode(contents, pref);
+            if (recursed)
+                changes.push_back(recursed.get());
+            return boost::optional<std::shared_ptr<change> >(
+                std::make_shared<concat_c>(changes));
+        }
         if(contents.x >= contents.cont[contents.y].size()) {
             contents.cont[contents.y].push_back(ch);
             contents.x = contents.cont[contents.y].size();
+            track += ch;
         } else {
             contents.cont[contents.y].insert(contents.x, 1, ch);
             contents.x++;
+            track += ch;
         }
         if(get_contents().refresh) {
             print_contents(get_contents());
@@ -74,20 +116,69 @@ boost::optional< std::shared_ptr<change> > enter_insert_mode(contents& contents,
     }
     contents.is_inserting = false;
     showing_message = false;
-    if(contents.cont[contents.y] == before) return boost::none;
-    return boost::optional< std::shared_ptr<change> >
-        (std::make_shared<insert_c>(y, contents.cont[contents.y], before));
+    return boost::optional<std::shared_ptr<change> >(
+        std::make_shared<insert_c>(track, contents.y, x));
 }
 
-boost::optional< std::shared_ptr<change> > enter_replace_mode(contents& contents, boost::optional<int>) {
+struct replace_c : public change {
+    const std::string o, n; 
+    const move_t y, x;
+    replace_c(const std::string& o, const std::string& n, move_t y, move_t x)
+        : o(o), n(n), y(y), x(x)
+    {
+    }
+    virtual bool is_overriding() override { return true; }
+    virtual void undo(contents& contents) override {
+        contents.cont[y] = contents.cont[y].substr(0, x) + o +
+                           contents.cont[y].substr(x + o.size());
+    }
+    virtual void redo(contents& contents) override
+    {
+        contents.cont[y] = contents.cont[y].substr(0, x) + n +
+                           contents.cont[y].substr(x + n.size());
+    }
+    virtual std::shared_ptr<change> regenerate(const contents& contents) const
+        override
+    {
+        return std::make_shared<replace_c>(
+            contents.cont[contents.y].substr(contents.x, n.size()), n,
+            contents.y, contents.x);
+    }
+};
+
+boost::optional< std::shared_ptr<change> > enter_replace_mode(contents& contents, boost::optional<int> pref) {
+    std::string o, n;
+    auto x = contents.x;
     char ch;
     show_message("--INSERT (REPLACE)--");
     contents.is_inserting = true;
+    if(get_contents().refresh) {
+        print_contents(get_contents());
+        show_message("--INSERT (REPLACE)--");
+    }
     while((ch = getch()) != _escape) {
+        if(ch == '\n') {
+            o = contents.cont[contents.y][contents.x];
+            std::vector<std::shared_ptr<change> > changes;
+            changes.reserve(3);
+            if (o.size())
+                changes.push_back(
+                    std::make_shared<replace_c>(o, n, contents.y, x));
+            changes.push_back(std::make_shared<newline_c>(contents));
+            changes.back()->redo(contents);
+            auto recursed = enter_replace_mode(contents, pref);
+            if (recursed)
+                changes.push_back(recursed.get());
+            return boost::optional<std::shared_ptr<change> >(
+                std::make_shared<concat_c>(changes));
+        }
         if(contents.x >= contents.cont[contents.y].size()) {
             contents.cont[contents.y].push_back(ch);
             contents.x = contents.cont[contents.y].size();
+            n += ch;
         } else {
+            o += contents.cont[contents.y][contents.x];
+            n += ch;
             contents.cont[contents.y][contents.x] = ch;
             contents.x++;
         }
@@ -98,10 +189,88 @@ boost::optional< std::shared_ptr<change> > enter_replace_mode(contents& contents
     }
     contents.is_inserting = false;
     showing_message = false;
-    return boost::none;
+    return boost::optional<std::shared_ptr<change> >(
+        std::make_shared<replace_c>(o, n, contents.y, x));
 }
 
-boost::optional< std::shared_ptr<change> > enter_append_mode(contents& contents, boost::optional<int> b) {
+struct append_c : public change {
+    const std::string track; 
+    const move_t y, x;
+    append_c(const std::string& track, move_t y, move_t x)
+        : track(track), y(y), x(x)
+    {
+    }
+    virtual bool is_overriding() override
+    {
+        return true;
+    }
+    virtual void undo(contents& contents) override
+    {
+        contents.cont[y] = contents.cont[y].substr(0, x) +
+                           contents.cont[y].substr(x + track.size());
+        contents.y = y;
+        contents.x = x;
+        if (contents.x >= contents.cont[y].size())
+            contents.x = contents.cont[y].size() - 1;
+    }
+    virtual void redo(contents& contents) override
+    {
+        contents.cont[y] =
+            contents.cont[y].substr(0, x) + track + contents.cont[y].substr(x);
+        contents.y = y;
+        contents.x = x + track.size();
+        if (contents.x >= contents.cont[y].size())
+            contents.x = contents.cont[y].size() - 1;
+    }
+    virtual std::shared_ptr<change> regenerate(const contents& contents) const
+        override
+    {
+        return std::make_shared<append_c>(track, contents.y, contents.x + 1);
+    }
+};
+
+boost::optional< std::shared_ptr<change> > enter_append_mode(contents& contents, boost::optional<int> pref) {
     contents.x++;
-    return enter_insert_mode(contents, b);
+    std::string track;
+    auto x = contents.x;
+    char ch;
+    show_message("--INSERT--");
+    contents.is_inserting = true;
+    if(get_contents().refresh) {
+        print_contents(get_contents());
+        show_message("--INSERT--");
+    }
+    while((ch = getch()) != _escape) {
+        if(ch == '\n') {
+            std::vector<std::shared_ptr<change> > changes;
+            changes.reserve(3);
+            if (track.size())
+                changes.push_back(
+                    std::make_shared<insert_c>(track, contents.y, x));
+            changes.push_back(std::make_shared<newline_c>(contents));
+            changes.back()->redo(contents);
+            auto recursed = enter_insert_mode(contents, pref);
+            if (recursed)
+                changes.push_back(recursed.get());
+            return boost::optional<std::shared_ptr<change> >(
+                std::make_shared<concat_c>(changes));
+        }
+        if(contents.x >= contents.cont[contents.y].size()) {
+            contents.cont[contents.y].push_back(ch);
+            contents.x = contents.cont[contents.y].size();
+            track += ch;
+        } else {
+            contents.cont[contents.y].insert(contents.x, 1, ch);
+            contents.x++;
+            track += ch;
+        }
+        if(get_contents().refresh) {
+            print_contents(get_contents());
+            show_message("--INSERT--");
+        }
+    }
+    contents.is_inserting = false;
+    showing_message = false;
+    return boost::optional<std::shared_ptr<change> >(
+        std::make_shared<append_c>(track, contents.y, x));
 }
