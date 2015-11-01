@@ -7,11 +7,9 @@ T=test
 TO=testout
 CXX=clang++
 
-files=$O/insert_mode.o      \
-      $O/open_line.o        \
-      $O/join.o
+files=$O/insert_mode.o
 
-testfiles=${TO}/insert_mode_tests.o
+testfiles=
 
 all: ${files}
 
