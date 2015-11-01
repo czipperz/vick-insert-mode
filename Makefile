@@ -44,5 +44,3 @@ test: ${files} ${testfiles} $T/blank
 	${CXX} -o $T/out ${files} ${testfiles} ${CFLAGS} ${LDFLAGS} ../../src/configuration.cc -Dtesting
 	./$T/out
 
-tags:
-	etags `find src -name '*.cc'`
