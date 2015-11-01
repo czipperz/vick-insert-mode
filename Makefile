@@ -16,7 +16,7 @@ all: ${files}
 begin:
 	git pull
 	[ -d ../vick-move ] || git clone "https://github.com/czipperz/vick-move" ../vick-move
-	cd ../vick-move && make begin && make
+	cd ../vick-move && make begin
 
 $O/%.o: $S/%.cc $S/%.hh
 	@mkdir -p $O
