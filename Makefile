@@ -14,6 +14,7 @@ testfiles=
 all: ${files}
 
 begin:
+	git pull
 	[ -d ../vick-move ] || git clone "https://github.com/czipperz/vick-move" ../vick-move
 	cd ../vick-move && make begin && make
 
