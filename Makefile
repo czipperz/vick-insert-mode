@@ -37,9 +37,9 @@ clean:
 	[ ! -d ${TO} ] || rm -R ${TO}
 
 test: ${files} ${testfiles}
-	@mkdir -p $T
-	${CXX} -o $T/out $^ ${CFLAGS} ${LDFLAGS} ${LDLIBS} \
+	@mkdir -p ${TO}
+	${CXX} -o ${TO}/out $^ ${CFLAGS} ${LDFLAGS} ${LDLIBS} \
            ../../src/configuration.cc -Dtesting
-	./$T/out
+	./${TO}/out
 
 .PHONY: all begin clean test
