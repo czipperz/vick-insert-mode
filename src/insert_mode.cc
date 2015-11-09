@@ -23,7 +23,7 @@ struct insert_c : public change {
                            contents.cont[y].substr(x + track.size());
         contents.y = y;
         contents.x = x;
-        if (contents.x >= contents.cont[y].size())
+        if (contents.x && contents.x >= contents.cont[y].size())
             contents.x = contents.cont[y].size() - 1;
     }
     virtual void redo(contents& contents) override
@@ -210,7 +210,7 @@ struct append_c : public change {
                            contents.cont[y].substr(x + track.size());
         contents.y = y;
         contents.x = x;
-        if (contents.x >= contents.cont[y].size())
+        if (contents.x && contents.x >= contents.cont[y].size())
             contents.x = contents.cont[y].size() - 1;
     }
     virtual void redo(contents& contents) override
@@ -230,6 +230,8 @@ struct append_c : public change {
 };
 
 boost::optional< std::shared_ptr<change> > enter_append_mode(contents& contents, boost::optional<int> pref) {
+    if (contents.cont[contents.y].size() == 0)
+        return enter_insert_mode(contents, pref);
     contents.x++;
     std::string track;
     auto x = contents.x;
