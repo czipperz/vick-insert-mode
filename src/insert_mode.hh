@@ -3,6 +3,9 @@
 
 #include "../../../src/contents.hh"
 
+namespace vick {
+namespace insert_mode {
+
 /*!
  * \file insert_mode.hh
  * \brief Basic commands that have to do with inserting text into the buffer
@@ -52,5 +55,8 @@ boost::optional< std::shared_ptr<change> > enter_replace_mode(contents&, boost::
  * \see global_insert_map
  */
 boost::optional< std::shared_ptr<change> > enter_append_mode (contents&, boost::optional<int> = boost::none);
+
+}
+}
 
 #endif

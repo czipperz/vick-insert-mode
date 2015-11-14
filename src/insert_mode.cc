@@ -6,6 +6,9 @@
 #include "../../../src/show_message.hh"
 #include "../../vick-move/src/move.hh"
 
+namespace vick {
+namespace insert_mode {
+
 struct insert_c : public change {
     const std::string track;
     const move_t y, x;
@@ -275,4 +278,7 @@ boost::optional< std::shared_ptr<change> > enter_append_mode(contents& contents,
     showing_message = false;
     return boost::optional<std::shared_ptr<change> >(
         std::make_shared<append_c>(track, contents.y, x));
+}
+
+}
 }
