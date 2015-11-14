@@ -1,5 +1,6 @@
 #include <ncurses.h>
 
+#include "../../../src/configuration.hh"
 #include "../../../src/concat_c.hh"
 #include "../../../src/contents.hh"
 #include "../../../src/key_aliases.hh"
@@ -86,7 +87,7 @@ enter_insert_mode(contents& contents, boost::optional<int> pref)
         print_contents(get_contents());
         show_message("--INSERT--");
     }
-    while ((ch = getch()) != _escape) {
+    while ((ch = getch()) != QUIT_KEY) {
         if (ch == '\n') {
             std::vector<std::shared_ptr<change> > changes;
             changes.reserve(3);
@@ -163,7 +164,7 @@ enter_replace_mode(contents& contents, boost::optional<int> pref)
         print_contents(get_contents());
         show_message("--INSERT (REPLACE)--");
     }
-    while ((ch = getch()) != _escape) {
+    while ((ch = getch()) != QUIT_KEY) {
         if (ch == '\n') {
             o = contents.cont[contents.y][contents.x];
             std::vector<std::shared_ptr<change> > changes;
@@ -250,7 +251,7 @@ enter_append_mode(contents& contents, boost::optional<int> pref)
         print_contents(get_contents());
         show_message("--INSERT--");
     }
-    while ((ch = getch()) != _escape) {
+    while ((ch = getch()) != QUIT_KEY) {
         if (ch == '\n') {
             std::vector<std::shared_ptr<change> > changes;
             changes.reserve(3);
