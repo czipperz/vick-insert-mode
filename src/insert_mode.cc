@@ -202,7 +202,7 @@ enter_replace_mode(contents& contents, boost::optional<int> pref)
 }
 
 struct append_c : public change {
-    const std::string track; 
+    const std::string track;
     const move_t y, x;
     append_c(const std::string& track, move_t y, move_t x)
         : track(track)
