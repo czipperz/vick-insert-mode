@@ -26,7 +26,7 @@ struct insert_c : public change {
                            contents.cont[y].substr(x + track.size());
         contents.y = y;
         contents.x = x;
-        if (contents.x && contents.x >= contents.cont[y].size())
+        if (contents.x and contents.x >= contents.cont[y].size())
             contents.x = contents.cont[y].size() - 1;
     }
     virtual void redo(contents& contents) override
@@ -217,7 +217,7 @@ struct append_c : public change {
                            contents.cont[y].substr(x + track.size());
         contents.y = y;
         contents.x = x;
-        if (contents.x && contents.x >= contents.cont[y].size())
+        if (contents.x and contents.x >= contents.cont[y].size())
             contents.x = contents.cont[y].size() - 1;
     }
     virtual void redo(contents& contents) override
