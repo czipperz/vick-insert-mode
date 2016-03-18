@@ -282,6 +282,8 @@ enter_append_mode(contents& contents, boost::optional<int> pref)
     }
     contents.is_inserting = false;
     showing_message = false;
+    // cancel out ++ from beginning
+    if (contents.x != 0) contents.x--;
     return boost::optional<std::shared_ptr<change> >(
         std::make_shared<append_c>(track, contents.y, x));
 }
