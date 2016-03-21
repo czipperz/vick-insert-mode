@@ -8,7 +8,8 @@ namespace insert_mode {
 
 /*!
  * \file insert_mode.hh
- * \brief Basic commands that have to do with inserting text into the buffer
+ * \brief Basic commands that have to do with inserting text into the
+ * buffer
  *
  * These commands all rely on `global_insert_map` to dictate what keys
  * do special things.
@@ -29,7 +30,9 @@ namespace insert_mode {
  *
  * \see global_insert_map
  */
-boost::optional< std::shared_ptr<change> > enter_insert_mode (contents&, boost::optional<int> = boost::none);
+boost::optional<std::shared_ptr<change> >
+enter_insert_mode(contents&, boost::optional<int> = boost::none);
+
 /*!
  * \brief Similar to insert mode but overrides text
  *
@@ -45,7 +48,9 @@ boost::optional< std::shared_ptr<change> > enter_insert_mode (contents&, boost::
  * \see enter_insert_mode()
  * \see global_insert_map
  */
-boost::optional< std::shared_ptr<change> > enter_replace_mode(contents&, boost::optional<int> = boost::none);
+boost::optional<std::shared_ptr<change> >
+enter_replace_mode(contents&, boost::optional<int> = boost::none);
+
 /*!
  * \brief Moves forward a character then enters insert mode
  *
@@ -54,8 +59,8 @@ boost::optional< std::shared_ptr<change> > enter_replace_mode(contents&, boost::
  * \see enter_insert_mode()
  * \see global_insert_map
  */
-boost::optional< std::shared_ptr<change> > enter_append_mode (contents&, boost::optional<int> = boost::none);
-
+boost::optional<std::shared_ptr<change> >
+enter_append_mode(contents&, boost::optional<int> = boost::none);
 }
 }
 
