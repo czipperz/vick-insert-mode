@@ -83,8 +83,8 @@ enter_insert_mode(contents& contents, boost::optional<int> pref)
     char ch;
     show_message("--INSERT--");
     contents.is_inserting = true;
-    if (get_contents().refresh) {
-        print_contents(get_contents());
+    if (contents.refresh) {
+        print_contents(contents);
         show_message("--INSERT--");
     }
     while ((ch = getch()) != QUIT_KEY) {
@@ -111,8 +111,8 @@ enter_insert_mode(contents& contents, boost::optional<int> pref)
             contents.x++;
             track += ch;
         }
-        if (get_contents().refresh) {
-            print_contents(get_contents());
+        if (contents.refresh) {
+            print_contents(contents);
             show_message("--INSERT--");
         }
     }
