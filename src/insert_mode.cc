@@ -222,7 +222,7 @@ struct append_c : public change {
 
 boost::optional<std::shared_ptr<change> >
 enter_append_mode(contents& contents, boost::optional<int> pref) {
-    if (contents.cont[contents.y].size() == 0)
+    if (contents.cont[contents.y].empty())
         return enter_insert_mode(contents, pref);
     contents.x++;
     std::string track;
