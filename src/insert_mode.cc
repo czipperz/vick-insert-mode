@@ -1,12 +1,12 @@
 #include <ncurses.h>
 
-#include "../../../src/file_contents.hh"
-#include "../../../src/configuration.hh"
-#include "../../../src/concat_c.hh"
-#include "../../../src/contents.hh"
-#include "../../../src/key_aliases.hh"
-#include "../../../src/show_message.hh"
-#include "../../vick-move/src/move.hh"
+#include "file_contents.hh"
+#include "configuration.hh"
+#include "concat_c.hh"
+#include "contents.hh"
+#include "key_aliases.hh"
+#include "show_message.hh"
+#include "vick-move/src/move.hh"
 
 namespace vick {
 namespace insert_mode {

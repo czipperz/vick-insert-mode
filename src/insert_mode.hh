@@ -1,7 +1,7 @@
 #ifndef HEADER_GUARD_INSERT_MODE_H
 #define HEADER_GUARD_INSERT_MODE_H
 
-#include "../../../src/contents.hh"
+#include "contents.hh"
 
 namespace vick {
 namespace insert_mode {
