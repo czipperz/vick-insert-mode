@@ -51,7 +51,7 @@ struct insert_c : public change {
 
 struct newline_c : public change {
     const std::string first, second;
-    const int y;
+    const move_t y;
     newline_c(const contents& contents)
         : first(contents.cont[contents.y].substr(0, contents.x))
         , second(contents.cont[contents.y].substr(contents.x))
