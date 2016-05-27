@@ -23,7 +23,9 @@ struct insert_c : public change {
         : track(track)
         , y(y)
         , x(x) {}
-    virtual bool is_overriding() override { return true; }
+    virtual bool is_overriding() const noexcept override {
+        return true;
+    }
     virtual void undo(contents& contents) override {
         contents.cont[y] = contents.cont[y].substr(0, x) +
                            contents.cont[y].substr(x + track.size());
@@ -54,7 +56,7 @@ struct newline_c : public change {
         : first(contents.cont[contents.y].substr(0, contents.x))
         , second(contents.cont[contents.y].substr(contents.x))
         , y(contents.y) {}
-    virtual bool is_overriding() override {
+    virtual bool is_overriding() const noexcept override {
         return true;
     }
     virtual void undo(contents& contents) override {
@@ -130,7 +132,9 @@ struct replace_c : public change {
         , n(n)
         , y(y)
         , x(x) {}
-    virtual bool is_overriding() override { return true; }
+    virtual bool is_overriding() const noexcept override {
+        return true;
+    }
     virtual void undo(contents& contents) override {
         contents.cont[y] = contents.cont[y].substr(0, x) + o +
                            contents.cont[y].substr(x + o.size());
@@ -203,7 +207,9 @@ struct append_c : public change {
         : track(track)
         , y(y)
         , x(x) {}
-    virtual bool is_overriding() override { return true; }
+    virtual bool is_overriding() const noexcept override {
+        return true;
+    }
     virtual void undo(contents& contents) override {
         contents.cont[y] = contents.cont[y].substr(0, x) +
                            contents.cont[y].substr(x + track.size());
