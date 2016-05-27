@@ -54,21 +54,23 @@ struct newline_c : public change {
         : first(contents.cont[contents.y].substr(0, contents.x))
         , second(contents.cont[contents.y].substr(contents.x))
         , y(contents.y) {}
-    virtual bool is_overriding() { return true; }
-    virtual void undo(contents& contents) {
+    virtual bool is_overriding() override {
+        return true;
+    }
+    virtual void undo(contents& contents) override {
         contents.cont[y] = first + second;
         contents.cont.erase(contents.cont.begin() + y + 1);
         contents.y = y;
         contents.x = first.size();
     }
-    virtual void redo(contents& contents) {
+    virtual void redo(contents& contents) override {
         contents.cont[y] = first;
         contents.cont.insert(contents.cont.begin() + y + 1, second);
         contents.y = y + 1;
         contents.x = 0;
     }
     virtual std::shared_ptr<change>
-    regenerate(const contents& contents) const {
+    regenerate(const contents& contents) const override {
         return std::make_shared<newline_c>(contents);
     }
 };
