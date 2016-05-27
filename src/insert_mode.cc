@@ -4,10 +4,11 @@
 
 #include <ncurses.h>
 
-#include "file_contents.hh"
-#include "configuration.hh"
 #include "concat_c.hh"
+#include "configuration.hh"
 #include "contents.hh"
+#include "file_contents.hh"
+#include "insert_mode.hh"
 #include "key_aliases.hh"
 #include "show_message.hh"
 #include "vick-move/src/move.hh"
