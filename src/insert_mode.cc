@@ -8,10 +8,10 @@
 #include "configuration.hh"
 #include "contents.hh"
 #include "file_contents.hh"
-#include "insert_mode.hh"
+#include "../lib.hh"
 #include "key_aliases.hh"
 #include "show_message.hh"
-#include "vick-move/src/move.hh"
+#include "vick-move/lib.hh"
 
 namespace vick {
 namespace insert_mode {
