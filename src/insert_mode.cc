@@ -12,6 +12,7 @@
 #include "key_aliases.hh"
 #include "show_message.hh"
 #include "vick-move/lib.hh"
+#include "print_contents.hh"
 
 namespace vick {
 namespace insert_mode {
