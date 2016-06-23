@@ -84,7 +84,6 @@ enter_insert_mode(contents& contents, boost::optional<int> pref) {
     auto x = contents.x;
     char ch;
     show_message("--INSERT--");
-    contents.is_inserting = true;
     if (contents.refresh) {
         print_contents(contents);
         show_message("--INSERT--");
@@ -118,7 +117,6 @@ enter_insert_mode(contents& contents, boost::optional<int> pref) {
             show_message("--INSERT--");
         }
     }
-    contents.is_inserting = false;
     showing_message = false;
     return boost::optional<std::shared_ptr<change> >(
         std::make_shared<insert_c>(track, contents.y, x));
@@ -159,7 +157,6 @@ enter_replace_mode(contents& contents, boost::optional<int> pref) {
     auto x = contents.x;
     char ch;
     show_message("--INSERT (REPLACE)--");
-    contents.is_inserting = true;
     if (get_contents().refresh) {
         print_contents(get_contents());
         show_message("--INSERT (REPLACE)--");
@@ -195,7 +192,6 @@ enter_replace_mode(contents& contents, boost::optional<int> pref) {
             show_message("--INSERT (REPLACE)--");
         }
     }
-    contents.is_inserting = false;
     showing_message = false;
     return boost::optional<std::shared_ptr<change> >(
         std::make_shared<replace_c>(o, n, contents.y, x));
@@ -243,7 +239,6 @@ enter_append_mode(contents& contents, boost::optional<int> pref) {
     auto x = contents.x;
     char ch;
     show_message("--INSERT--");
-    contents.is_inserting = true;
     if (get_contents().refresh) {
         print_contents(get_contents());
         show_message("--INSERT--");
@@ -277,7 +272,6 @@ enter_append_mode(contents& contents, boost::optional<int> pref) {
             show_message("--INSERT--");
         }
     }
-    contents.is_inserting = false;
     showing_message = false;
     // cancel out ++ from beginning
     if (contents.x != 0)
