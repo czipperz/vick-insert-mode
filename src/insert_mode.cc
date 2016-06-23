@@ -4,15 +4,15 @@
 
 #include <ncurses.h>
 
+#include "../lib.hh"
 #include "concat_c.hh"
 #include "configuration.hh"
 #include "contents.hh"
 #include "file_contents.hh"
-#include "../lib.hh"
 #include "key_aliases.hh"
+#include "print_contents.hh"
 #include "show_message.hh"
 #include "vick-move/lib.hh"
-#include "print_contents.hh"
 
 namespace vick {
 namespace insert_mode {
