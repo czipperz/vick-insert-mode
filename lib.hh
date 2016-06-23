@@ -11,7 +11,7 @@ namespace vick {
 namespace insert_mode {
 
 /*!
- * \file insert_mode.hh
+ * \file vick-insert-mode/lib.hh
  * \brief Basic commands that have to do with inserting text into the
  * buffer
  *
