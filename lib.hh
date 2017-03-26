@@ -34,7 +34,7 @@ namespace insert_mode {
  *
  * \see global_insert_map
  */
-boost::optional<std::shared_ptr<change> >
+std::shared_ptr<change>
 enter_insert_mode(contents&, boost::optional<int> = boost::none);
 
 /*!
@@ -52,7 +52,7 @@ enter_insert_mode(contents&, boost::optional<int> = boost::none);
  * \see enter_insert_mode()
  * \see global_insert_map
  */
-boost::optional<std::shared_ptr<change> >
+std::shared_ptr<change>
 enter_replace_mode(contents&, boost::optional<int> = boost::none);
 
 /*!
@@ -63,7 +63,7 @@ enter_replace_mode(contents&, boost::optional<int> = boost::none);
  * \see enter_insert_mode()
  * \see global_insert_map
  */
-boost::optional<std::shared_ptr<change> >
+std::shared_ptr<change>
 enter_append_mode(contents&, boost::optional<int> = boost::none);
 }
 }

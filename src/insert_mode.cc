@@ -78,7 +78,7 @@ struct newline_c : public change {
     }
 };
 
-boost::optional<std::shared_ptr<change> >
+std::shared_ptr<change>
 enter_insert_mode(contents& contents, boost::optional<int> pref) {
     std::string track;
     auto x = contents.x;
@@ -99,8 +99,8 @@ enter_insert_mode(contents& contents, boost::optional<int> pref) {
             changes.back()->redo(contents);
             auto recursed = enter_insert_mode(contents, pref);
             if (recursed)
-                changes.push_back(recursed.get());
-            return boost::optional<std::shared_ptr<change> >(
+                changes.push_back(recursed);
+            return std::shared_ptr<change>(
                 std::make_shared<concat_c>(changes));
         }
         if (contents.x >= contents.cont[contents.y].size()) {
@@ -118,7 +118,7 @@ enter_insert_mode(contents& contents, boost::optional<int> pref) {
         }
     }
     showing_message = false;
-    return boost::optional<std::shared_ptr<change> >(
+    return std::shared_ptr<change>(
         std::make_shared<insert_c>(track, contents.y, x));
 }
 
@@ -151,7 +151,7 @@ struct replace_c : public change {
     }
 };
 
-boost::optional<std::shared_ptr<change> >
+std::shared_ptr<change>
 enter_replace_mode(contents& contents, boost::optional<int> pref) {
     std::string o, n;
     auto x = contents.x;
@@ -173,8 +173,8 @@ enter_replace_mode(contents& contents, boost::optional<int> pref) {
             changes.back()->redo(contents);
             auto recursed = enter_replace_mode(contents, pref);
             if (recursed)
-                changes.push_back(recursed.get());
-            return boost::optional<std::shared_ptr<change> >(
+                changes.push_back(recursed);
+            return std::shared_ptr<change>(
                 std::make_shared<concat_c>(changes));
         }
         if (contents.x >= contents.cont[contents.y].size()) {
@@ -193,7 +193,7 @@ enter_replace_mode(contents& contents, boost::optional<int> pref) {
         }
     }
     showing_message = false;
-    return boost::optional<std::shared_ptr<change> >(
+    return std::shared_ptr<change>(
         std::make_shared<replace_c>(o, n, contents.y, x));
 }
 
@@ -230,7 +230,7 @@ struct append_c : public change {
     }
 };
 
-boost::optional<std::shared_ptr<change> >
+std::shared_ptr<change>
 enter_append_mode(contents& contents, boost::optional<int> pref) {
     if (contents.cont[contents.y].empty())
         return enter_insert_mode(contents, pref);
@@ -254,8 +254,8 @@ enter_append_mode(contents& contents, boost::optional<int> pref) {
             changes.back()->redo(contents);
             auto recursed = enter_insert_mode(contents, pref);
             if (recursed)
-                changes.push_back(recursed.get());
-            return boost::optional<std::shared_ptr<change> >(
+                changes.push_back(recursed);
+            return std::shared_ptr<change>(
                 std::make_shared<concat_c>(changes));
         }
         if (contents.x >= contents.cont[contents.y].size()) {
@@ -276,7 +276,7 @@ enter_append_mode(contents& contents, boost::optional<int> pref) {
     // cancel out ++ from beginning
     if (contents.x != 0)
         contents.x--;
-    return boost::optional<std::shared_ptr<change> >(
+    return std::shared_ptr<change>(
         std::make_shared<append_c>(track, contents.y, x));
 }
 }
